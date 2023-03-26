@@ -4,34 +4,37 @@ const Button = ({ text, handleClick }) => {
   return <button type="button" onClick={handleClick}>{text}</button>
 }
 
-const Stats = ({ text, data }) => {
-  return <div>{text} {data}</div>;
+const StatisticLine = ({ text, value }) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+  );
 }
 
 const Statistics = ({ good, neutral, bad }) => {
-
   const calcPositive = (good, total) => {
     if (total === 0) return "0 %";
     let positive = (good * 100) / total;
     return `${positive} %`;
   }
 
+  if (good === 0 && neutral === 0 && bad === 0) return <div>No feedback has been given</div>;
+
   return (
-    <>
-      <h2>Statistics</h2>
-      <Stats text="good" data={good} />
-      <Stats text="neutral" data={neutral} />
-      <Stats text="bad" data={bad} />
-      <Stats text="all" data={good + neutral + bad} />
-      <Stats text="average" data={ (good + neutral + bad) / 3 } />
-      <Stats text="positive" data={calcPositive(good, good + neutral + bad)} />
-    </>
-    
-  )
+    <table>
+      <StatisticLine text="good" value={good} />
+      <StatisticLine text="neutral" value={neutral} />
+      <StatisticLine text="bad" value={bad} />
+      <StatisticLine text="all" value={good + neutral + bad} />
+      <StatisticLine text="average" value={ (good + neutral + bad) / 3 } />
+      <StatisticLine text="positive" value={calcPositive(good, good + neutral + bad)} />
+    </table>
+  );
 }
 
 const App = () => {
-  // save clicks of each button to its own state
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
@@ -48,9 +51,10 @@ const App = () => {
         <Button text="neutral" handleClick={handleNeutralButtonClick} />
         <Button text="good" handleClick={handleGoodButtonClick} />
       </div>
+      <h2>Statistics</h2>
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
-  )
+  );
 }
 
 export default App;
