@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 
 import Filter from "./Components/Filter";
 import PersonForm from './Components/PersonForm';
 import Persons from './Components/Persons';
+
+import personsService from "./Services/Persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,7 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [filterName, setFilterName] = useState('');
 
-  const personsToShow = persons.filter(person =>
+  const personsToShow = () => persons.filter(person =>
     person.name.toLowerCase().startsWith(filterName.toLowerCase()));
 
   const handleFilterChange = (event) => {
@@ -37,16 +38,32 @@ const App = () => {
       name: newName,
       number: newNumber
     };
-    setPersons(persons.concat(newPerson));
-    setNewName('');
-    setNewNumber('');
+    personsService
+      .create(newPerson)
+      .then(response => {
+        setPersons(persons.concat(response));
+        setNewName('');
+        setNewNumber('');
+      })
+      .catch(error => alert(`Error happened: ${error}`));
+  }
+
+  const handleDeleteClick = (id) => () => {
+    const person = persons.find(person => person.id === id);
+    if (!person) return;
+    window.confirm(`Delete ${person.name}?`);
+    personsService
+      .deletePerson(id)
+      .then(response => {
+        setPersons(persons.filter(person => person.id !== id));
+      });
   }
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then(response => {
-        setPersons(response.data);
+    personsService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons);
     });
   }, []);
 
@@ -63,7 +80,7 @@ const App = () => {
         handleSubmit={handleSubmit}
       /> 
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow}/>
+      <Persons personsToShow={personsToShow} handleClick={handleDeleteClick} />
     </div>
   );
 }
