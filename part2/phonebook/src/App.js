@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 
+import "./index.css";
+
 import Filter from "./Components/Filter";
 import PersonForm from './Components/PersonForm';
 import Persons from './Components/Persons';
+import Notification from './Components/Notification';
 
 import personsService from "./Services/Persons";
 
@@ -11,6 +14,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filterName, setFilterName] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState(null);
 
   const personsToShow = () => persons.filter(person =>
     person.name.toLowerCase().startsWith(filterName.toLowerCase()));
@@ -37,6 +41,10 @@ const App = () => {
           .update(person.id, changedPerson)
           .then(response => {
             setPersons(persons.map(p => p.id !== person.id ? p : response));
+            setNotificationMessage(`${person.name}'s phone has been successfully updated`);
+            setTimeout(() => {
+              setNotificationMessage(null);
+            }, 4000);
           })
           .catch(error => {
             alert(`The person ${person.name} does not exist`);
@@ -57,6 +65,10 @@ const App = () => {
         setPersons(persons.concat(response));
         setNewName('');
         setNewNumber('');
+        setNotificationMessage(`The new person ${response.name} has been successfully added`);
+        setTimeout(() => {
+          setNotificationMessage(null);
+        }, 4000);
       })
       .catch(error => alert(`Error happened while creating a person: ${error}`));
   }
@@ -69,6 +81,10 @@ const App = () => {
         .deletePerson(id)
         .then(response => {
           setPersons(persons.filter(person => person.id !== id));
+          setNotificationMessage(`${person.name} has been successfully deleted`);
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 4000);
         })
         .catch(error => {
           alert(`This person has already been deleted`);
@@ -90,6 +106,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
       <h2>Add a new</h2>
+      <Notification message={notificationMessage} />
       <PersonForm 
         newName={newName}
         newNumber={newNumber}
