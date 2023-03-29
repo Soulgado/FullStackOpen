@@ -6,6 +6,7 @@ import Filter from "./Components/Filter";
 import PersonForm from './Components/PersonForm';
 import Persons from './Components/Persons';
 import Notification from './Components/Notification';
+import ErrorMessage from './Components/Error';
 
 import personsService from "./Services/Persons";
 
@@ -15,6 +16,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [filterName, setFilterName] = useState('');
   const [notificationMessage, setNotificationMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const personsToShow = () => persons.filter(person =>
     person.name.toLowerCase().startsWith(filterName.toLowerCase()));
@@ -47,7 +49,10 @@ const App = () => {
             }, 4000);
           })
           .catch(error => {
-            alert(`The person ${person.name} does not exist`);
+            setErrorMessage(`Information of ${person.name} has already been removed from server`);
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 4000);
             setPersons(persons.filter(p => p.id !== person.id));
           });
       }
@@ -70,7 +75,12 @@ const App = () => {
           setNotificationMessage(null);
         }, 4000);
       })
-      .catch(error => alert(`Error happened while creating a person: ${error}`));
+      .catch(error => {
+        setErrorMessage("Error happened while creating a new person");
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 4000);
+      });
   }
 
   const handleDeleteClick = (id) => () => {
@@ -87,7 +97,10 @@ const App = () => {
           }, 4000);
         })
         .catch(error => {
-          alert(`This person has already been deleted`);
+          setErrorMessage(`Information of ${person.name} has already been removed from server`);
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 4000);
           setPersons(persons.filter(person => person.id !== id));
         });
     } 
@@ -104,6 +117,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <ErrorMessage message={errorMessage} />
       <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
       <h2>Add a new</h2>
       <Notification message={notificationMessage} />

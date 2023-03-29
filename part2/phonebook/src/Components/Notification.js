@@ -2,7 +2,7 @@ const Notification = ({ message }) => {
     if (message === null) return null;
 
     return (
-        <div className="notification">
+        <div className="message notification">
             {message}
         </div>
     )
