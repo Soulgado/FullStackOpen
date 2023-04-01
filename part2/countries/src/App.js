@@ -13,6 +13,10 @@ function App() {
     setFilter(event.target.value);
   }
 
+  const handleShowClick = (countryName) => () => {
+    setCountries(countries.filter(country => country.name.common === countryName));
+  }
+
   useEffect(() => {
     if (filter !== "") {
       axios.get("https://restcountries.com/v3.1/all")
@@ -29,7 +33,7 @@ function App() {
     <div>
       find countries
       <input type="text" value={filter} onChange={handleFilterChange}/>
-      <Countries countries={countries} />
+      <Countries countries={countries} handleShowClick={handleShowClick}/>
     </div>
   );
 }
