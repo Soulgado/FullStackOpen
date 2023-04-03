@@ -49,11 +49,10 @@ const App = () => {
             }, 4000);
           })
           .catch(error => {
-            setErrorMessage(`Information of ${person.name} has already been removed from server`);
+            setErrorMessage(error.response.data.error);
             setTimeout(() => {
               setErrorMessage(null)
             }, 4000);
-            setPersons(persons.filter(p => p.id !== person.id));
           });
       }
       setNewName('');
@@ -76,7 +75,7 @@ const App = () => {
         }, 4000);
       })
       .catch(error => {
-        setErrorMessage("Error happened while creating a new person");
+        setErrorMessage(error.response.data.error);
         setTimeout(() => {
           setErrorMessage(null)
         }, 4000);
