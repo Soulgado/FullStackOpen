@@ -39,7 +39,7 @@ test("a blog can be added to the database", async () => {
   const newBlog = {
     title: "First class tests",
     author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
     likes: 10,
   };
 
@@ -57,6 +57,45 @@ test("a blog can be added to the database", async () => {
   const blogsTitles = newBlogList.map(blog => blog.title);
   expect(blogsTitles).toContain("First class tests");
 });
+
+test("if likes property is missing from POST request, it defaults to value 0", async () => {
+  const newBlog = {
+    title: "First class tests",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
+  };
+
+  await api.post("/api/blogs").send(newBlog);
+
+  const response = await Blog.find({ title: "First class tests" });
+  const blog = response[0].toJSON();
+
+  expect(blog.likes).toBe(0);
+});
+
+test("if url or title are missing from POST request, server returns 400 Bad Request", async () => {
+  const newBlogWithoutTitle = {
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
+    likes: 10,
+  };
+
+  const newBlogWithoutUrl = {
+    title: "First class tests",
+    author: "Robert C. Martin",
+    likes: 10,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(newBlogWithoutTitle)
+    .expect(400);
+
+  await api
+    .post("/api/blogs")
+    .send(newBlogWithoutUrl)
+    .expect(400);
+}, 100000);
 
 afterAll(async () => {
   await mongoose.connection.close();
