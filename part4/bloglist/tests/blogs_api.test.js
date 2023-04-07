@@ -53,8 +53,7 @@ describe("adding blogs to the database", () => {
       .expect(201)
       .expect("Content-Type", /application\/json/);
   
-    const newResponse = await Blog.find({});
-    const newBlogList = newResponse.map(response => response.toJSON());
+    const newBlogList = await Blog.find({});
   
     expect(newBlogList).toHaveLength(testHelper.initialTestBlogs.length + 1);
     
@@ -107,53 +106,68 @@ describe("adding blogs to the database", () => {
 
 describe("deleting blogs", () => {
   test("request correctly deletes blog from the database", async () => {
-    const newBlog = {
-      _id: "5a422b891b54a676234d17fa",
-      title: "First class tests",
-      author: "Robert C. Martin",
-      url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
-      likes: 10,
-    };
-
-    await api.post("/api/blogs").send(newBlog);
+    const dbBlogs = await Blog.find({});
+    const blogToDelete = dbBlogs[0];
 
     await api
-      .delete(`api/blogs/${newBlog._id}`)
+      .delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204);
     
     const allBlogs = await Blog.find({});
-    expect(allBlogs).toHaveLength(testHelper.initialTestBlogs.length);
+    expect(allBlogs).toHaveLength(testHelper.initialTestBlogs.length - 1);
 
-    expect(allBlogs).not.toContainEqual(newBlog);
+    expect(allBlogs).not.toContainEqual(blogToDelete);
   });
 });
 
 describe("updating individual blog posts", () => {
-  test("correctly updating number of likes", async () => {
-    const newBlog = {
-      _id: "5a422b891b54a676234d17fa",
-      title: "First class tests",
-      author: "Robert C. Martin",
-      url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
-      likes: 10,
-    };
-
-    await newBlog.save();
+  test("correctly updates number of likes", async () => {
+    const dbBlogs = await Blog.find({});
+    const blogToChange = dbBlogs[0];
 
     await api
-      .put(`api/blogs/${newBlog._id}`)
-      .send({ ...newBlog, likes: 5 })
+      .put(`/api/blogs/${blogToChange.id}`)
+      .send({ ...blogToChange, likes: blogToChange.likes + 1 })
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
-    const response = await Blog.findById(newBlog._id);
-    const changedBlog = response.body;
+    const changedBlog = await Blog.findById(blogToChange.id);
 
-    expect(changedBlog.likes).toBe(5);
+    expect(changedBlog.likes).toBe(blogToChange.likes + 1);
+  });
+
+  test("correctly updates title of blog", async () => {
+    const dbBlogs = await Blog.find({});
+    const blogToChange = dbBlogs[0];
+
+    await api
+      .put(`/api/blogs/${blogToChange.id}`)
+      .send({ ...blogToChange, title: "Unique title" })
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const changedBlog = await Blog.findById(blogToChange.id);
+
+    expect(changedBlog.title).not.toBe(blogToChange.title);
+    expect(changedBlog.title).toBe("Unique title");
+  });
+
+  test("correctly updates author of blog", async () => {
+    const dbBlogs = await Blog.find({});
+    const blogToChange = dbBlogs[0];
+
+    await api
+      .put(`/api/blogs/${blogToChange.id}`)
+      .send({ ...blogToChange, author: "Unique author" })
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const changedBlog = await Blog.findById(blogToChange.id);
+
+    expect(changedBlog.author).not.toBe(blogToChange.author);
+    expect(changedBlog.author).toBe("Unique author");
   });
 });
-
-
 
 afterAll(async () => {
   await mongoose.connection.close();

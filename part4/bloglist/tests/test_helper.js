@@ -84,6 +84,10 @@ const initialTestBlogs = [
   },
 ]
 
+const blogsFromDb = async () => {
+  return await Blog.find({});
+}
+
 module.exports = {
   listWithOneBlog,
   listWithManyBlogs,
