@@ -47,11 +47,13 @@ describe("adding blogs to the database", () => {
       likes: 10,
     };
   
-    await api
+    const response = await api
       .post("/api/blogs")
       .send(newBlog)
       .expect(201)
       .expect("Content-Type", /application\/json/);
+
+    console.log(response);
   
     const newBlogList = await Blog.find({});
   

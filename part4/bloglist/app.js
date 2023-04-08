@@ -7,6 +7,8 @@ const config = require("./utils/config");
 const blogsRouter = require("./controllers/blogs");
 const usersRouter = require("./controllers/users");
 
+mongoose.set('strictQuery', false)
+
 mongoose.connect(config.MONGODB_URI);
 
 app.use(cors());
