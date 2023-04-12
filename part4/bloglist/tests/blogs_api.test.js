@@ -8,8 +8,11 @@ const testHelper = require("./test_helper");
 
 beforeEach(async () => {
   await Blog.deleteMany({});
+  await User.deleteMany({});
 
-  const blogObjects = testHelper.initialTestBlogs.map(blog => new Blog(blog));
+  const testUser = testHelper.createTestUser();
+  const blogsWithUser = testHelper.initialTestBlogs.map(blog => blog.author = testUser.id);
+  const blogObjects = blogsWithUser.map(blog => new Blog(blog));
   const promiseArray = blogObjects.map(blog => blog.save());
   await Promise.all(promiseArray);
 });
@@ -42,18 +45,18 @@ describe("adding blogs to the database", () => {
     const newBlog = {
       _id: "5a422b891b54a676234d17fa",
       title: "First class tests",
-      author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
       likes: 10,
     };
+
+    const userToken = await testHelper.getTestUserToken();
   
     const response = await api
       .post("/api/blogs")
       .send(newBlog)
+      .set("Authorization", `Bearer ${userToken}`)
       .expect(201)
       .expect("Content-Type", /application\/json/);
-
-    console.log(response);
   
     const newBlogList = await Blog.find({});
   
@@ -67,11 +70,15 @@ describe("adding blogs to the database", () => {
     const newBlog = {
       _id: "5a422b891b54a676234d17fa",
       title: "First class tests",
-      author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
     };
+
+    const userToken = await testHelper.getTestUserToken();
   
-    await api.post("/api/blogs").send(newBlog);
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .set("Authorization", `Bearer ${userToken}`)
   
     const response = await Blog.find({ title: "First class tests" });
     const blog = response[0];
