@@ -4,14 +4,18 @@ const app = require("../app");
 const api = supertest(app);
 
 const Blog = require("../models/blog");
+const User = require("../models/user");
 const testHelper = require("./test_helper");
 
 beforeEach(async () => {
   await Blog.deleteMany({});
   await User.deleteMany({});
 
-  const testUser = testHelper.createTestUser();
-  const blogsWithUser = testHelper.initialTestBlogs.map(blog => blog.author = testUser.id);
+  const testUser = await testHelper.createTestUser();
+  const blogsWithUser = testHelper.initialTestBlogs.map(blog => {
+    blog.author = testUser.id;
+    return blog;
+  });
   const blogObjects = blogsWithUser.map(blog => new Blog(blog));
   const promiseArray = blogObjects.map(blog => blog.save());
   await Promise.all(promiseArray);
@@ -23,7 +27,7 @@ describe("when there is initially some blogs", () => {
       .get("/api/blogs")
       .expect(200)
       .expect("Content-Type", /application\/json/);
-  }, 100000);
+  });
   
   test("request to api/blogs returns all blogs", async () => {
     const response = await api.get("/api/blogs");
@@ -89,7 +93,6 @@ describe("adding blogs to the database", () => {
   test("if url or title are missing from POST request, server returns 400 Bad Request", async () => {
     const newBlogWithoutTitle = {
       _id: "5a422b891b54a676234d17fa",
-      author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
       likes: 10,
     };
@@ -97,20 +100,38 @@ describe("adding blogs to the database", () => {
     const newBlogWithoutUrl = {
       _id: "5a422b891b54a676234d17fa",
       title: "First class tests",
-      author: "Robert C. Martin",
       likes: 10,
     };
+
+    const userToken = await testHelper.getTestUserToken();
   
     await api
       .post("/api/blogs")
       .send(newBlogWithoutTitle)
+      .set("Authorization", `Bearer ${userToken}`)
       .expect(400);
   
     await api
       .post("/api/blogs")
       .send(newBlogWithoutUrl)
+      .set("Authorization", `Bearer ${userToken}`)
       .expect(400);
-  }, 100000);
+  });
+
+  test("if token is not provided, POST request fails with 401 HTTP code", async () => {
+    const newBlog = {
+      _id: "5a422b891b54a676234d17fa",
+      title: "First class tests",
+      url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
+      likes: 10,
+    };
+
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      // .set("Authorization", "Bearer ")
+      .expect(401)
+  });
 });
 
 describe("deleting blogs", () => {
@@ -118,8 +139,11 @@ describe("deleting blogs", () => {
     const dbBlogs = await Blog.find({});
     const blogToDelete = dbBlogs[0];
 
+    const userToken = await testHelper.getTestUserToken();
+
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .expect(204);
     
     const allBlogs = await Blog.find({});
@@ -159,22 +183,6 @@ describe("updating individual blog posts", () => {
 
     expect(changedBlog.title).not.toBe(blogToChange.title);
     expect(changedBlog.title).toBe("Unique title");
-  });
-
-  test("correctly updates author of blog", async () => {
-    const dbBlogs = await Blog.find({});
-    const blogToChange = dbBlogs[0];
-
-    await api
-      .put(`/api/blogs/${blogToChange.id}`)
-      .send({ ...blogToChange, author: "Unique author" })
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
-    const changedBlog = await Blog.findById(blogToChange.id);
-
-    expect(changedBlog.author).not.toBe(blogToChange.author);
-    expect(changedBlog.author).toBe("Unique author");
   });
 });
 

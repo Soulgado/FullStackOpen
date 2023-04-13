@@ -100,14 +100,15 @@ const createTestUser = async () => {
 }
 
 const getTestUserToken = async () => {
-  const testUser = await User.find({})[0];
+  let testUser = await User.find({});
+  testUser = testUser[0];
 
   const userForToken = {
     username: testUser.username,
     id: testUser.id
   };
 
-  return jwt.verify(userForToken, process.env.SECRET)
+  return jwt.sign(userForToken, process.env.SECRET)
 }
 
 const blogsFromDb = async () => {
