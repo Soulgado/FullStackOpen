@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import PropTypes from "prop-types";
 
 const Blog = ({ blog, currentUser, handleLikeClick, handleDeleteClick }) => {
   const [detailsVisible, setDetailsVisible] = useState(false);
@@ -10,7 +10,7 @@ const Blog = ({ blog, currentUser, handleLikeClick, handleDeleteClick }) => {
     border: "solid",
     borderWidth: 1,
     marginBottom: 5
-  }
+  };
 
   return (
     <div style={blogStyle}>
@@ -18,27 +18,34 @@ const Blog = ({ blog, currentUser, handleLikeClick, handleDeleteClick }) => {
       <button type="button" onClick={() => setDetailsVisible(!detailsVisible)}>
         {detailsVisible ? "hide" : "view"}
       </button>
-      {detailsVisible && 
+      {detailsVisible &&
         <div>
           <div>{blog.url}</div>
           <div>
             Likes {blog.likes}
             <button
               type="button"
-              onClick={() => handleLikeClick({...blog, likes: blog.likes + 1})}
+              onClick={() => handleLikeClick({ ...blog, likes: blog.likes + 1 })}
             >
               Like
-            </button> 
+            </button>
           </div>
           <div>{blog.author}</div>
-          {currentUser && currentUser.username === blog.user.username 
-            ? <button type="button" onClick={() => handleDeleteClick(blog)}>Remove</button> 
-            : null 
+          {currentUser && currentUser.username === blog.user.username
+            ? <button type="button" onClick={() => handleDeleteClick(blog)}>Remove</button>
+            : null
           }
         </div>
       }
-    </div>  
+    </div>
   );
-}
+};
 
-export default Blog
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  currentUser: PropTypes.object.isRequired,
+  handleLikeClick: PropTypes.func.isRequired,
+  handleDeleteClick: PropTypes.func.isRequired
+};
+
+export default Blog;

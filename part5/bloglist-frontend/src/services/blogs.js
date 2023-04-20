@@ -1,10 +1,10 @@
-import axios from 'axios'
-const baseUrl = '/api/blogs'
+import axios from "axios";
+const baseUrl = "/api/blogs";
 
 const getAll = async () => {
-  const response = await axios.get(baseUrl)
+  const response = await axios.get(baseUrl);
   return response.data;
-}
+};
 
 const create = async (data, token) => {
   const response = await axios.post(baseUrl, data, {
@@ -13,13 +13,13 @@ const create = async (data, token) => {
     }
   });
   return response.data;
-}
+};
 
 const changeBlog = async (data) => {
   const response = await axios
     .put(`${baseUrl}/${data.id}`, data);
   return response.data;
-}
+};
 
 const deleteBlog = async (id, token) => {
   const response = await axios.delete(`${baseUrl}/${id}`, {
@@ -28,12 +28,11 @@ const deleteBlog = async (id, token) => {
     }
   });
   return response.data;
-}
+};
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default { 
+export default {
   getAll,
   create,
   changeBlog,
   deleteBlog,
-}
+};

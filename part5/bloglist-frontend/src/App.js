@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
-import LoginForm from './components/LoginForm';
+import { useState, useEffect, useRef } from "react";
+import Blog from "./components/Blog";
+import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import NewBlogForm from "./components/NewBlogForm";
-import blogService from './services/blogs'
+import blogService from "./services/blogs";
 import loginService from "./services/login";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogs] = useState([]);
   const [notificationInfo, setNotificationInfo] = useState({});
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +27,7 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (error) {
-      setNotificationInfo({ 
+      setNotificationInfo({
         type: "error",
         message: error.response.data.error
       });
@@ -35,12 +35,12 @@ const App = () => {
         setNotificationInfo({});
       }, 5000);
     }
-  }
+  };
 
   const handleLogout = () => {
     setUser(null);
     window.localStorage.removeItem("loggedBlogAppUser");
-  }
+  };
 
   const createNewBlog = async (blogToAdd) => {
     try {
@@ -63,12 +63,12 @@ const App = () => {
         setNotificationInfo({});
       }, 5000);
     }
-  }
+  };
 
   const handleLikeChange = async (data) => {
     try {
       const changedBlog = await blogService.changeBlog(data);
-      const newListOfBlogs = blogs.filter(blog => blog.id !== changedBlog.id)
+      const newListOfBlogs = blogs.filter(blog => blog.id !== changedBlog.id);
       setBlogs(newListOfBlogs.concat(changedBlog));
     } catch (error) {
       setNotificationInfo({
@@ -79,7 +79,7 @@ const App = () => {
         setNotificationInfo({});
       }, 5000);
     }
-  }
+  };
 
   const handleDelete = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
@@ -104,7 +104,7 @@ const App = () => {
         }, 5000);
       }
     }
-  }
+  };
 
   useEffect(() => {
     const storageUser = window.localStorage.getItem("loggedBlogAppUser");
@@ -117,7 +117,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    );  
+    );
   }, []);
 
   if (user === null) {
@@ -132,7 +132,7 @@ const App = () => {
           setPassword={setPassword}
         />
       </div>
-    )
+    );
   }
 
   return (
@@ -156,7 +156,7 @@ const App = () => {
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
