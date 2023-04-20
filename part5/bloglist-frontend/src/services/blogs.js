@@ -21,9 +21,19 @@ const changeBlog = async (data) => {
   return response.data;
 }
 
+const deleteBlog = async (id, token) => {
+  const response = await axios.delete(`${baseUrl}/${id}`, {
+    headers: {
+      "authorization": `Bearer ${token}`
+    }
+  });
+  return response.data;
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default { 
   getAll,
   create,
-  changeBlog
+  changeBlog,
+  deleteBlog,
 }

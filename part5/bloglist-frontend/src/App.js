@@ -81,6 +81,31 @@ const App = () => {
     }
   }
 
+  const handleDelete = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.deleteBlog(blog.id, user.token);
+        const newListOfBlogs = blogs.filter(b => b.id !== blog.id);
+        setBlogs(newListOfBlogs);
+        setNotificationInfo({
+          type: "success",
+          message: "Blog has been successfully removed"
+        });
+        setTimeout(() => {
+          setNotificationInfo({});
+        }, 5000);
+      } catch (error) {
+        setNotificationInfo({
+          type: "error",
+          message: "Error occured while changing deleting blog"
+        });
+        setTimeout(() => {
+          setNotificationInfo({});
+        }, 5000);
+      }
+    }
+  }
+
   useEffect(() => {
     const storageUser = window.localStorage.getItem("loggedBlogAppUser");
     if (storageUser) {
@@ -92,7 +117,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    );  
   }, []);
 
   if (user === null) {
@@ -122,7 +147,13 @@ const App = () => {
       </Togglable>
       <h2>blogs</h2>
       {blogs.sort((blog1, blog2) => blog2.likes - blog1.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} handleLikeClick={handleLikeChange} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          currentUser={user}
+          handleLikeClick={handleLikeChange}
+          handleDeleteClick={handleDelete}
+        />
       )}
     </div>
   )

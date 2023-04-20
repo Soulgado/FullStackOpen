@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const Blog = ({ blog, handleLikeClick }) => {
+const Blog = ({ blog, currentUser, handleLikeClick, handleDeleteClick }) => {
   const [detailsVisible, setDetailsVisible] = useState(false);
 
   const blogStyle = {
@@ -31,6 +31,10 @@ const Blog = ({ blog, handleLikeClick }) => {
             </button> 
           </div>
           <div>{blog.author}</div>
+          {currentUser && currentUser.username === blog.user.username 
+            ? <button type="button" onClick={() => handleDeleteClick(blog)}>Remove</button> 
+            : null 
+          }
         </div>
       }
     </div>  
