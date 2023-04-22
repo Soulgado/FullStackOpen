@@ -14,7 +14,8 @@ const Blog = ({ blog, currentUser, handleLikeClick, handleDeleteClick }) => {
 
   return (
     <div style={blogStyle}>
-      {blog.title}
+      <div>{blog.title}</div>
+      <div>{blog.author}</div>
       <button type="button" onClick={() => setDetailsVisible(!detailsVisible)}>
         {detailsVisible ? "hide" : "view"}
       </button>
@@ -30,7 +31,6 @@ const Blog = ({ blog, currentUser, handleLikeClick, handleDeleteClick }) => {
               Like
             </button>
           </div>
-          <div>{blog.author}</div>
           {currentUser && currentUser.username === blog.user.username
             ? <button type="button" onClick={() => handleDeleteClick(blog)}>Remove</button>
             : null

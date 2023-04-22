@@ -40,7 +40,7 @@ const NewBlogForm = (props) => {
             type="text"
             value={author}
             name="author"
-            id="title"
+            id="author"
             onChange={event => setAuthor(event.target.value)}
           />
         </div>
