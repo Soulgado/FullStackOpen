@@ -139,22 +139,24 @@ const App = () => {
     <div>
       <div>
         {user.username} logged in
-        <button type="button" onClick={handleLogout}>Logout</button>
+        <button id="logoutButton" type="button" onClick={handleLogout}>Logout</button>
       </div>
       <Notification info={notificationInfo} />
       <Togglable buttonLabel="Create new Blog" ref={blogFormRef}>
         <NewBlogForm createNewBlog={createNewBlog} />
       </Togglable>
       <h2>blogs</h2>
-      {blogs.sort((blog1, blog2) => blog2.likes - blog1.likes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          currentUser={user}
-          handleLikeClick={handleLikeChange}
-          handleDeleteClick={handleDelete}
-        />
-      )}
+      <div className="bloglist">
+        {blogs.sort((blog1, blog2) => blog2.likes - blog1.likes).map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            currentUser={user}
+            handleLikeClick={handleLikeChange}
+            handleDeleteClick={handleDelete}
+          />
+        )}
+      </div>
     </div>
   );
 };
