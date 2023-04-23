@@ -57,7 +57,7 @@ const App = () => {
     } catch (error) {
       setNotificationInfo({
         type: "error",
-        message: error.response.data.error
+        message: "Error creating blog"
       });
       setTimeout(() => {
         setNotificationInfo({});

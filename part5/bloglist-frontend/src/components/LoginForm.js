@@ -33,7 +33,7 @@ const LoginForm = (props) => {
             onChange={event => setPassword(event.target.value)}
           />
         </div>
-        <button type="submit">Login</button>
+        <button id="loginButton" type="submit">Login</button>
       </form>
     </>
   );
