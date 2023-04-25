@@ -7,14 +7,20 @@ const notificationSlice = createSlice({
     resetNotification(state, action) {
       return "";
     },
-    voteMessage(state, action) {
-      return `You voted '${action.payload}'`
-    },
-    createMessage(state, action) {
-      return `You created '${action.payload.content}'`
+    setMessage(state, action) {
+      return action.payload;
     }
   }
 });
 
-export const { resetNotification, voteMessage, createMessage } = notificationSlice.actions;
+export const { resetNotification, setMessage } = notificationSlice.actions;
+
+export const showMessage = (message, timeout) => {
+  return dispatch => {
+    dispatch(setMessage(message));
+    setTimeout(() => {
+      dispatch(resetNotification());
+    }, timeout);
+  }
+}
 export default notificationSlice.reducer;

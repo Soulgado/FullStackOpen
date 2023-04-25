@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit";
+import anecdoteService from "../services/anecdotes";
 
 // const anecdotesAtStart = [
 //   'If it hurts, do it more often',
@@ -26,20 +27,45 @@ const anecdoteSlice = createSlice({
   initialState: [],
   reducers: {
     voteAnecdote(state, action) {
-      const currentAnecdote = state.find(a => a.id === action.payload);
-      const votedAnecdote = { ...currentAnecdote, votes: currentAnecdote.votes + 1 };
       return state.map(anecdote => 
-        anecdote.id !== action.payload ? anecdote : votedAnecdote);
+        anecdote.id !== action.payload.id ? anecdote : action.payload);
     },
-    createNew(state, action) {
-      const newAnecdote = action.payload;
-      state.push(newAnecdote);
+    addAnecdote(state, action) {
+      state.push(action.payload);
     },
+    // createNew(state, action) {
+    //   const newAnecdote = action.payload;
+    //   state.push(newAnecdote);
+    // },
     setAnecdotes(state, action) {
       return action.payload;
     }
   }
 });
 
-export const { createNew, voteAnecdote, setAnecdotes } = anecdoteSlice.actions;
+export const { addAnecdote, voteAnecdote, setAnecdotes } = anecdoteSlice.actions;
+
+export const getAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll();
+    dispatch(setAnecdotes(anecdotes));
+  }
+}
+
+export const createAnecdote = (content) => {
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.createNew(content);
+    dispatch(addAnecdote(newAnecdote));
+  }
+}
+
+export const changeAnecdote = (id) => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll();
+    const currentAnecdote = anecdotes.find(a => a.id === id);
+    const votedAnecdote = { ...currentAnecdote, votes: currentAnecdote.votes + 1 };
+    await anecdoteService.changeAnecdote(votedAnecdote);
+    dispatch(votedAnecdote);
+  }
+}
 export default anecdoteSlice.reducer;
