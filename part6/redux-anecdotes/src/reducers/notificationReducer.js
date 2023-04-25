@@ -11,7 +11,7 @@ const notificationSlice = createSlice({
       return `You voted '${action.payload}'`
     },
     createMessage(state, action) {
-      return `You created '${action.payload}'`
+      return `You created '${action.payload.content}'`
     }
   }
 });
