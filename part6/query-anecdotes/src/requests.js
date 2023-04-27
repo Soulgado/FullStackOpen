@@ -9,4 +9,4 @@ export const createNew = (anecdote) =>
   axios.post(baseUrl, anecdote).then(response => response.data);
 
 export const changeAnecdote = (anecdote) => 
-  axios.put(`${baseUrl}/${anecdote.id}`, anecdote).then(response => response.data);
+  axios.put(`${baseUrl}/${anecdote.id}`, anecdote).then(response => response);

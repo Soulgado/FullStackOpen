@@ -1,10 +1,13 @@
-import { useQuery, useQueryClient, useMutation } from 'react-query';
-import AnecdoteForm from './components/AnecdoteForm'
-import Notification from './components/Notification'
-import { getAnecdotes, changeAnecdote } from './requests';
+import { useContext } from "react";
+import { useQuery, useQueryClient, useMutation } from "react-query";
+import AnecdoteForm from "./components/AnecdoteForm";
+import Notification from "./components/Notification";
+import { getAnecdotes, changeAnecdote } from "./requests";
+import NotificationContext from './NotificationContext';
 
 const App = () => {
   const queryClient = useQueryClient();
+  const [notification, dispatch] = useContext(NotificationContext);
   const changeAnecdoteMutation = useMutation(changeAnecdote,  {
     onSuccess: () => {
       queryClient.invalidateQueries("anecdotes");
@@ -13,6 +16,10 @@ const App = () => {
   
   const handleVote = (anecdote) => {
     changeAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 });
+    dispatch({ type: "SET", payload: `Anecdote '${anecdote.content}' voted` });
+    setTimeout(() => {
+      dispatch({ type: "RESET" });
+    }, 5000);
   }
 
   const result = useQuery("anecdotes", getAnecdotes);
