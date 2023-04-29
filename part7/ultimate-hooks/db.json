@@ -1,0 +1,42 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "custom hooks are awesome"
+    },
+    {
+      "id": 2,
+      "content": "best feature ever <3"
+    },
+    {
+      "content": "some note",
+      "id": 3
+    },
+    {
+      "content": "another note about something",
+      "id": 4
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "Matti Luukkainen",
+      "number": "040-12344565"
+    },
+    {
+      "id": 2,
+      "name": "Tarja Halonen",
+      "number": "040-2223334"
+    },
+    {
+      "name": "John Snow",
+      "number": "123-12345325",
+      "id": 3
+    },
+    {
+      "name": "Jack Black",
+      "number": "987-3123233",
+      "id": 4
+    }
+  ]
+}
