@@ -5,13 +5,13 @@ import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import Users from "./components/Users";
 import BlogList from "./components/BlogList";
+import User from "./components/User";
 import loginService from "./services/login";
 import { setUser, removeUser } from "./reducers/userReducer";
 import {
   setNotification,
   resetNotification,
 } from "./reducers/notificationReducer";
-
 
 const App = () => {
   const dispatch = useDispatch();
@@ -81,6 +81,7 @@ const App = () => {
       <Routes>
         <Route to="/" element={<BlogList />} />
         <Route to="/users" element={<Users />} />
+        <Route to="/users/:id" element={<User />} />
       </Routes>
     </div>
   );

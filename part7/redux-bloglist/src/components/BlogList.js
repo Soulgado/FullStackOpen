@@ -108,15 +108,17 @@ const BlogList = () => {
       </Togglable>
       <h2>blogs</h2>
       <div className="bloglist">
-        {[...blogs].sort((blog1, blog2) => blog2.likes - blog1.likes).map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            currentUser={user}
-            handleLikeClick={handleLikeChange}
-            handleDeleteClick={handleDelete}
-          />
-        ))}
+        {[...blogs]
+          .sort((blog1, blog2) => blog2.likes - blog1.likes)
+          .map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              currentUser={user}
+              handleLikeClick={handleLikeChange}
+              handleDeleteClick={handleDelete}
+            />
+          ))}
       </div>
     </>
   );
