@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-import Blog from "./components/Blog";
 import Togglable from "./components/Togglable";
 import NewBlogForm from "./components/NewBlogForm";
 import Notification from "./components/Notification";
@@ -10,12 +10,7 @@ import {
   setNotification,
   resetNotification,
 } from "./reducers/notificationReducer";
-import {
-  setBlogs,
-  createBlog,
-  likeBlog,
-  deleteBlog,
-} from "./reducers/blogReducer";
+import { setBlogs, createBlog } from "./reducers/blogReducer";
 
 const BlogList = () => {
   const dispatch = useDispatch();
@@ -51,51 +46,6 @@ const BlogList = () => {
     }
   };
 
-  const handleLikeChange = async (data) => {
-    try {
-      const changedBlog = await blogService.changeBlog(data);
-      dispatch(likeBlog(changedBlog));
-    } catch (error) {
-      dispatch(
-        setNotification({
-          type: "error",
-          message: "Error occured while changing amount of likes",
-        })
-      );
-      setTimeout(() => {
-        dispatch(resetNotification());
-      }, 5000);
-    }
-  };
-
-  const handleDelete = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      try {
-        await blogService.deleteBlog(blog.id, user.token);
-        dispatch(deleteBlog(blog.id));
-        dispatch(
-          setNotification({
-            type: "success",
-            message: "Blog has been successfully removed",
-          })
-        );
-        setTimeout(() => {
-          dispatch(resetNotification());
-        }, 5000);
-      } catch (error) {
-        dispatch(
-          setNotification({
-            type: "error",
-            message: "Error occured while changing deleting blog",
-          })
-        );
-        setTimeout(() => {
-          dispatch(resetNotification());
-        }, 5000);
-      }
-    }
-  };
-
   useEffect(() => {
     blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)));
   }, []);
@@ -111,13 +61,9 @@ const BlogList = () => {
         {[...blogs]
           .sort((blog1, blog2) => blog2.likes - blog1.likes)
           .map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              currentUser={user}
-              handleLikeClick={handleLikeChange}
-              handleDeleteClick={handleDelete}
-            />
+            <Link to={`/blogs/${blog.id}`} key={blog.id}>
+              {blog.title}
+            </Link>
           ))}
       </div>
     </>

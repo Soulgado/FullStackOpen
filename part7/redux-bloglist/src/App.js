@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import Users from "./components/Users";
+import Blog from "./components/Blog";
 import BlogList from "./components/BlogList";
 import User from "./components/User";
 import loginService from "./services/login";
@@ -82,6 +83,7 @@ const App = () => {
         <Route to="/" element={<BlogList />} />
         <Route to="/users" element={<Users />} />
         <Route to="/users/:id" element={<User />} />
+        <Route to="/blogs/:id" element={<Blog />} />
       </Routes>
     </div>
   );
