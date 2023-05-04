@@ -14,7 +14,7 @@ import { setBlogs, createBlog } from "./reducers/blogReducer";
 
 const BlogList = () => {
   const dispatch = useDispatch();
-  const blogs = useSelector((state) => state.blogs);
+  const blogs = useSelector((state) => state.blogs.blogs);
   const notification = useSelector((state) => state.notifications);
   const user = useSelector((state) => state.users);
   const blogFormRef = useRef();

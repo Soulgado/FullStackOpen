@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import blogService from "../services/blogs";
-import { likeBlog, deleteBlog } from "../reducers/blogReducer";
+import { setBlog, likeBlog, createComment } from "../reducers/blogReducer";
 import {
   setNotification,
   resetNotification,
@@ -10,9 +10,11 @@ import {
 
 const Blog = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [blog, setBlog] = useState(null);
   const user = useSelector((state) => state.users);
+  const blog = useSelector((state) => state.blogs.blog);
+  const [commentText, setCommentText] = useState("");
 
   const handleLikeClick = async (data) => {
     try {
@@ -35,7 +37,7 @@ const Blog = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       try {
         await blogService.deleteBlog(blog.id, user.token);
-        dispatch(deleteBlog(blog.id));
+        // dispatch(deleteBlog(blog.id));
         dispatch(
           setNotification({
             type: "success",
@@ -45,6 +47,7 @@ const Blog = () => {
         setTimeout(() => {
           dispatch(resetNotification());
         }, 5000);
+        navigate("/blogs");
       } catch (error) {
         dispatch(
           setNotification({
@@ -59,9 +62,26 @@ const Blog = () => {
     }
   };
 
+  const handleAddCommentClick = async () => {
+    try {
+      await blogService.createComment(blog.id, commentText, user.token);
+      dispatch(createComment(commentText));
+    } catch (error) {
+      dispatch(
+        setNotification({
+          type: "error",
+          message: "Error occured while creating comment",
+        })
+      );
+      setTimeout(() => {
+        dispatch(resetNotification());
+      }, 5000);
+    }
+  };
+
   useEffect(() => {
     blogService.getBlog(id).then((response) => {
-      setBlog(response);
+      dispatch(setBlog(response));
     });
   }, []);
 
@@ -96,6 +116,14 @@ const Blog = () => {
             Remove
           </button>
         ) : null}
+        <div>
+          <h2>Comments</h2>
+          <input type="text" onChange={(event) => setCommentText(event.target.value)}/>
+          <button type="button" onClick={handleAddCommentClick}>Add comment</button>
+          <ul>
+            {blog.comments.map(comment => <li key={comment.content}>{comment.content}</li>)}
+          </ul>
+        </div>
       </div>
     </div>
   );
