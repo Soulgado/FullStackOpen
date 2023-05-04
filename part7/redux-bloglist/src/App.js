@@ -7,8 +7,9 @@ import Users from "./components/Users";
 import Blog from "./components/Blog";
 import BlogList from "./components/BlogList";
 import User from "./components/User";
+import Navigation from "./components/Navigation";
 import loginService from "./services/login";
-import { setUser, removeUser } from "./reducers/userReducer";
+import { setUser } from "./reducers/userReducer";
 import {
   setNotification,
   resetNotification,
@@ -44,10 +45,6 @@ const App = () => {
     }
   };
 
-  const handleLogout = () => {
-    dispatch(removeUser());
-  };
-
   useEffect(() => {
     const storageUser = window.localStorage.getItem("loggedBlogAppUser");
     if (storageUser) {
@@ -73,12 +70,7 @@ const App = () => {
 
   return (
     <div>
-      <div>
-        {user.username} logged in
-        <button id="logoutButton" type="button" onClick={handleLogout}>
-          Logout
-        </button>
-      </div>
+      <Navigation />
       <Routes>
         <Route to="/" element={<BlogList />} />
         <Route to="/users" element={<Users />} />
