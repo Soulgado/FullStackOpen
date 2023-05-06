@@ -57,7 +57,7 @@ const BlogList = () => {
         <NewBlogForm createNewBlog={createNewBlog} />
       </Togglable>
       <h2>blogs</h2>
-      <div className="bloglist">
+      <div>
         <ul>
           {[...blogs]
             .sort((blog1, blog2) => blog2.likes - blog1.likes)

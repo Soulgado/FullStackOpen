@@ -56,7 +56,7 @@ const App = () => {
 
   if (user === null) {
     return (
-      <div>
+      <div className="container">
         <Notification info={notification} />
         <LoginForm
           handleLogin={handleLogin}
@@ -70,7 +70,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <Navigation />
       <Routes>
         <Route path="/users/:id" element={<User />} />

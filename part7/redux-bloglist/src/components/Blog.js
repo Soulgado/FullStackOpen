@@ -7,6 +7,7 @@ import {
   setNotification,
   resetNotification,
 } from "../reducers/notificationReducer";
+import { Button, Card } from "react-bootstrap";
 
 const Blog = () => {
   const { id } = useParams();
@@ -86,47 +87,38 @@ const Blog = () => {
     });
   }, []);
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
   if (!blog) return null;
 
   return (
-    <div style={blogStyle} className="blog">
-      <h1>
-        {blog.title} {blog.author}
-      </h1>
-      <div>
-        <div>{blog.url}</div>
+    <Card className="blog">
+      <Card.Body>
+        <Card.Title>{blog.title} {blog.author}</Card.Title>
+        <Card.Link>{blog.url}</Card.Link>
         <div>
           {blog.likes} likes
-          <button
+          <Button
+            variant="primary"
             type="button"
             onClick={() => handleLikeClick({ ...blog, likes: blog.likes + 1 })}
           >
             Like
-          </button>
+          </Button>
         </div>
         {user && user.username === blog.user.username ? (
-          <button type="button" onClick={() => handleDeleteClick(blog)}>
+          <Button variant="danger" type="button" onClick={() => handleDeleteClick(blog)}>
             Remove
-          </button>
+          </Button>
         ) : null}
         <div>
           <h2>Comments</h2>
           <input type="text" onChange={(event) => setCommentText(event.target.value)}/>
-          <button type="button" onClick={handleAddCommentClick}>Add comment</button>
+          <Button variant="primary" type="button" onClick={handleAddCommentClick}>Add comment</Button>
           <ul>
             {blog.comments.map(comment => (<li key={comment._id}>{comment.content}</li>))}
           </ul>
         </div>
-      </div>
-    </div>
+      </Card.Body>
+    </Card>
   );
 };
 

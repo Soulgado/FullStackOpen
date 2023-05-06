@@ -1,26 +1,44 @@
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { Navbar, Nav, Button } from "react-bootstrap";
 import { removeUser } from "../reducers/userReducer";
 
 const Navigation = () => {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.users);
+  const user = useSelector((state) => state.users);
 
   const handleLogout = () => {
     dispatch(removeUser());
   };
 
   return (
-    <nav>
-      <Link to="/blogs">Blogs</Link>
-      <Link to="/users">Users</Link>
-      <div>
-        {user.username} logged in
-        <button id="logoutButton" type="button" onClick={handleLogout}>
-          Logout
-        </button>
-      </div>
-    </nav>
+    <Navbar expand="lg" bg="dark" variant="dark">
+      <Nav className="me-auto">
+        <Nav.Link href="#" as="span">
+          <Link to="/blogs">Blogs</Link>
+        </Nav.Link>
+        <Nav.Link href="#" as="span">
+          <Link to="/users">Users</Link>
+        </Nav.Link>
+        <Nav.Link href="#" as="span">
+          {user ? (
+            <em>
+              {user.username} logged in{" "}
+              <Button
+                variant="primary"
+                id="logoutButton"
+                type="button"
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            </em>
+          ) : (
+            <Link to="/login">login</Link>
+          )}
+        </Nav.Link>
+      </Nav>
+    </Navbar>
   );
 };
 
