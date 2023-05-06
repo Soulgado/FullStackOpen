@@ -35,7 +35,7 @@ const deleteBlog = async (id, token) => {
 };
 
 const createComment = async (id, comment, token) => {
-  const response = await axios.post(`${baseUrl}/${id}/comments`, comment, {
+  const response = await axios.post(`${baseUrl}/${id}/comments`, { comment }, {
     headers: {
       authorization: `Bearer ${token}`,
     },

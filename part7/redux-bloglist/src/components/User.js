@@ -20,7 +20,7 @@ const User = () => {
       <h3>added blogs</h3>
       <ul>
         {user.blogs.map((blog) => (
-          <li key={blog.title}>{blog.title}</li>
+          <li key={blog.id}>{blog.title}</li>
         ))}
       </ul>
     </>

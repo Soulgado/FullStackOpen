@@ -64,8 +64,9 @@ const Blog = () => {
 
   const handleAddCommentClick = async () => {
     try {
-      await blogService.createComment(blog.id, commentText, user.token);
-      dispatch(createComment(commentText));
+      const newComment = await blogService.createComment(blog.id, commentText, user.token);
+      dispatch(createComment(newComment));
+      setCommentText("");
     } catch (error) {
       dispatch(
         setNotification({
@@ -121,7 +122,7 @@ const Blog = () => {
           <input type="text" onChange={(event) => setCommentText(event.target.value)}/>
           <button type="button" onClick={handleAddCommentClick}>Add comment</button>
           <ul>
-            {blog.comments.map(comment => <li key={comment.content}>{comment.content}</li>)}
+            {blog.comments.map(comment => (<li key={comment._id}>{comment.content}</li>))}
           </ul>
         </div>
       </div>

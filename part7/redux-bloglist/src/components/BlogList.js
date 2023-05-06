@@ -2,15 +2,15 @@ import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import Togglable from "./components/Togglable";
-import NewBlogForm from "./components/NewBlogForm";
-import Notification from "./components/Notification";
+import Togglable from "./Togglable";
+import NewBlogForm from "./NewBlogForm";
+import Notification from "./Notification";
 import blogService from "../services/blogs";
 import {
   setNotification,
   resetNotification,
-} from "./reducers/notificationReducer";
-import { setBlogs, createBlog } from "./reducers/blogReducer";
+} from "../reducers/notificationReducer";
+import { setBlogs, createBlog } from "../reducers/blogReducer";
 
 const BlogList = () => {
   const dispatch = useDispatch();
@@ -58,13 +58,17 @@ const BlogList = () => {
       </Togglable>
       <h2>blogs</h2>
       <div className="bloglist">
-        {[...blogs]
-          .sort((blog1, blog2) => blog2.likes - blog1.likes)
-          .map((blog) => (
-            <Link to={`/blogs/${blog.id}`} key={blog.id}>
-              {blog.title}
-            </Link>
-          ))}
+        <ul>
+          {[...blogs]
+            .sort((blog1, blog2) => blog2.likes - blog1.likes)
+            .map((blog) => (
+              <li key={blog.id}>
+                <Link to={`/blogs/${blog.id}`} key={blog.id}>
+                  {blog.title}
+                </Link>
+              </li>
+            ))}
+        </ul>
       </div>
     </>
   );

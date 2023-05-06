@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, redirect } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import Users from "./components/Users";
@@ -32,6 +32,7 @@ const App = () => {
       dispatch(setUser(user));
       setUsername("");
       setPassword("");
+      redirect("/blogs");
     } catch (error) {
       dispatch(
         setNotification({
@@ -72,10 +73,10 @@ const App = () => {
     <div>
       <Navigation />
       <Routes>
-        <Route to="/" element={<BlogList />} />
-        <Route to="/users" element={<Users />} />
-        <Route to="/users/:id" element={<User />} />
-        <Route to="/blogs/:id" element={<Blog />} />
+        <Route path="/users/:id" element={<User />} />
+        <Route path="/blogs/:id" element={<Blog />} />
+        <Route path="/blogs" element={<BlogList />} />
+        <Route path="/users" element={<Users />} />
       </Routes>
     </div>
   );
