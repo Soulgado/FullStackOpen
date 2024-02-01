@@ -1,5 +1,6 @@
 const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
+const { v1: uuid } = require("uuid");
 
 let authors = [
   {
@@ -119,6 +120,15 @@ const typeDefs = `
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
   }
+
+  type Mutation {
+    addBook(
+      title: String!
+      published: Int!
+      author: String!
+      genres: [String!]!
+    ): Book
+  }
 `;
 
 // helper functions for filtering books array in functional programming style
@@ -146,6 +156,17 @@ const resolvers = {
       }
     },
     allAuthors: () => authors,
+  },
+  Mutation: {
+    addBook: (root, args) => {
+      const newBook = { ...args, id: uuid() };
+      if (!authors.some(a => a.name === args.author)) {
+        const newAuthor = { name: args.author };
+        authors = authors.concat(newAuthor);
+      }
+      books = books.concat(newBook);
+      return newBook;
+    }
   },
   Author: {
     bookCount: (root) => {
