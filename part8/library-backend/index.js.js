@@ -116,19 +116,34 @@ const typeDefs = `
   type Query {
     authorCount: Int!
     bookCount: Int!
-    allBooks(author: String): [Book!]!
+    allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
   }
 `;
+
+// helper functions for filtering books array in functional programming style
+function filterByAuthor(listOfBooks, author) {
+  return listOfBooks.filter(b => b.author === author);
+}
+
+function filterByGenre(listOfBooks, genre) {
+  return listOfBooks.filter(b => b.genres.includes(genre) ? b : undefined);
+}
 
 const resolvers = {
   Query: {
     authorCount: () => authors.length,
     bookCount: () => books.length,
     allBooks: (root, args) => {
-      if (!args.author) return books;
-
-      return books.filter(b => b.author === args.author);
+      if (!args.author && !args.genre) {
+        return books;
+      } else if (!args.author && args.genre) {
+        return filterByGenre(books, args.genre);
+      } else if (args.author && !args.genre) {
+        return filterByAuthor(books, args.author);
+      } else {
+        return filterByGenre(filterByAuthor(books, args.author), args.genre);
+      }
     },
     allAuthors: () => authors,
   },
