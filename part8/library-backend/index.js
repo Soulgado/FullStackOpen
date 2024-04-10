@@ -96,11 +96,8 @@ const resolvers = {
     }
   },
   Author: {
-    bookCount: (root) => {
-      let bookCount = 0;
-      // book author field matches author name field
-      books.forEach(b => b.author === root.name ? bookCount += 1 : null);
-      return bookCount;
+    bookCount: async (root) => {
+      return Book.collection.countDocuments({ author: root.name });
     },
   }
 };
