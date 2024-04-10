@@ -45,6 +45,10 @@ const typeDefs = `
   }
 
   type Mutation {
+    addAuthor(
+      name: String!
+      born: Int
+    )
     addBook(
       title: String!
       published: Int!
@@ -85,14 +89,56 @@ const resolvers = {
     allAuthors: async () => Author.find({}),
   },
   Mutation: {
+    addAuthor: async (root, args) => {
+      const newAuthor = new Author({ ...args });
+
+      try {
+        await newAuthor.save();
+      } catch (error) {
+        throw new GraphQLError("Saving author failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            error
+          }
+        });
+      }
+
+      return newAuthor;
+    },
     addBook: async (root, args) => {
       const newBook = new Book({ ...args });
-      return newBook.save();
+
+      try {
+        await newBook.save();
+      } catch (error) {
+        throw new GraphQLError("Saving book failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.title,
+            error
+          }
+        });
+      }
+      return newBook;
     },
     editAuthor: async (root, args) => {
       const currentAuthor = await Author.find({ name: args.name });
       currentAuthor.born = args.setBornTo;
-      return currentAuthor.save();
+
+      try {
+        await currentAuthor.save();
+      } catch (error) {
+        throw new GraphQLError("Changing author failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.setBornTo,
+            error
+          }
+        });
+      }
+
+      return currentAuthor;
     }
   },
   Author: {
