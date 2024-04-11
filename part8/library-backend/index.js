@@ -61,7 +61,7 @@ const typeDefs = `
     addAuthor(
       name: String!
       born: Int
-    )
+    ): Author
     addBook(
       title: String!
       published: Int!
@@ -98,13 +98,14 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     allBooks: async (root, args) => {
       if (!args.author && !args.genre) {
-        return Book.find({});
+        const books = await Book.find({}).populate("author");
+        return books;
       } else if (!args.author && args.genre) {
-        return Book.find({ genre: args.genre });
+        return Book.find({ genre: args.genre }).populate("author");
       } else if (args.author && !args.genre) {
-        return Book.find({ author: args.author });
+        return Book.find({ author: args.author }).populate("author");
       } else {
-        return Book.find({ author: args.author, genre: args.genre });
+        return Book.find({ author: args.author, genre: args.genre }).populate("author");
       }
     },
     allAuthors: async () => Author.find({}),
