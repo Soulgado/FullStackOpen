@@ -2,6 +2,7 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { v1: uuid } = require("uuid");
 const jwt = require("jsonwebtoken");
+const { GraphQLError } = require("graphql");
 
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
@@ -201,7 +202,6 @@ const resolvers = {
     },
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username });
-      
       if ( !user || args.password !== "password" ) {
         throw new GraphQLError('wrong credentials', {
           extensions: {
@@ -215,7 +215,7 @@ const resolvers = {
         id: user._id,
       }
 
-      return jwt.sign(userForToken, process.env.JWT_SECRET);
+      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
     },
   },
   Author: {

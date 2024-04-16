@@ -22,12 +22,11 @@ const App = () => {
       <div>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
-        <button onClick={() => setPage('add')}>add book</button>
         {!token ? <button onClick={() => setPage("login")}>login</button> : null}
         {token         // if user logged in show addBook and logout buttons
         ? (
         <>
-          <button onClick={() => setPage("addBook")}>add book</button>
+          <button onClick={() => setPage("add")}>add book</button>
           <button onClick={logout}>logout</button>
         </>)
         : null}  
@@ -39,7 +38,7 @@ const App = () => {
 
       <NewBook show={page === 'add'} />
 
-      <LoginForm show={page === "login"} setToken={setToken} />
+      <LoginForm show={page === "login"} setToken={setToken} setPage={setPage} />
     </div>
   )
 }

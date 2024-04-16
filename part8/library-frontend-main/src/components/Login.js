@@ -4,7 +4,7 @@ import { useMutation } from "@apollo/client";
 import { LOGIN } from "../queries";
 
 
-const LoginForm = ({ show, setToken }) => {
+const LoginForm = ({ show, setToken, setPage }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
@@ -19,6 +19,7 @@ const LoginForm = ({ show, setToken }) => {
             const token = result.data.login.value;
             setToken(token);
             localStorage.setItem("library-app-user-token", token);
+            setPage("books");    // change page to list of books
         }
     }, [result.data]);
 
