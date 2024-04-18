@@ -102,11 +102,14 @@ const resolvers = {
         const books = await Book.find({}).populate("author");
         return books;
       } else if (!args.author && args.genre) {
-        return Book.find({ genre: args.genre }).populate("author");
+        console.log(args);
+        const books = await Book.find({ genres: args.genre }).populate("author");
+        console.log(books);
+        return books;
       } else if (args.author && !args.genre) {
         return Book.find({ author: args.author }).populate("author");
       } else {
-        return Book.find({ author: args.author, genre: args.genre }).populate("author");
+        return Book.find({ author: args.author, genres: args.genre }).populate("author");
       }
     },
     allAuthors: async () => Author.find({}),
